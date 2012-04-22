@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include "_cgo_export.h"
 
 char **return_argv;
 
@@ -9,14 +10,17 @@ char *return_arg(int i)
     return return_argv[i];
 }
 
-int init(int argc, char **argv)
+int init(int argc, void *argv)
 {
     int ac, i;
+    GoString *args;
+
+    args = (GoString *) argv;
 
     ac = argc;
     return_argv = (char **) malloc (argc * sizeof(char *));
     for (i = 0; i < argc; i++)
-	return_argv[i] = strdup(argv[i]);
+	return_argv[i] = strndup(args[i].p, args[i].n);
 
     /* This is called in all GTK applications. Arguments are parsed
      * from the command line and are returned to the application. */
