@@ -1,16 +1,12 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
-#include <_cgo_export.h>
 
 static void hello( GtkWidget *widget,
                    gpointer   data )
 {
-    GoString gs;
     char *s = strdup("Hello World");
-    gs.p = s;
-    gs.n = strlen(s);
-    go_message(1, gs);
+    go_message(1, s);
     free(s);
 }
 
@@ -24,11 +20,8 @@ static gboolean delete_event( GtkWidget *widget,
      * This is useful for popping up 'are you sure you want to quit?'
      * type dialogs. */
 
-    GoString gs;
     char *s = "Delete!";
-    gs.p = s;
-    gs.n = strlen(s);
-    go_message(0, gs);
+    go_message(0, s);
 
     return FALSE;
 }
