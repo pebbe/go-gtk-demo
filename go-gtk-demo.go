@@ -2,8 +2,7 @@ package main
 
 /*
 #cgo pkg-config: gtk+-2.0
-char *return_arg(int);
-int init(int, void*);
+void init(void*, int*, char**);
 void setup(void);
 */
 import "C"
@@ -33,12 +32,16 @@ func go_message(id int, cContent *C.char) {
 func initGTK() {
 
 	// pass command line arguments to GTK+
-	argc := int(C.init(C.int(len(os.Args)), unsafe.Pointer(&os.Args[0])))
+	ln := len(os.Args)
+	argc := C.int(ln)
+	argv := make([]*C.char, ln)
+	C.init(unsafe.Pointer(&os.Args[0]), &argc, &argv[0])
 
 	// update os.Args
+	ln = int(argc)
 	os.Args = os.Args[0:0]
-	for i := 0; i < argc; i++ {
-		os.Args = append(os.Args, C.GoString(C.return_arg(C.int(i))))
+	for i := 0; i < ln; i++ {
+		os.Args = append(os.Args, C.GoString(argv[i]))
 	}
 
 	fmt.Println("Remaining command line arguments:", os.Args)

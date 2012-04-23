@@ -3,30 +3,19 @@
 #include <string.h>
 #include "_cgo_export.h"
 
-char **return_argv;
-
-char *return_arg(int i)
+void init(void *argv, int *ac, char **av)
 {
-    return return_argv[i];
-}
-
-int init(int argc, void *argv)
-{
-    int ac, i;
+    int i;
     GoString *args;
 
     args = (GoString *) argv;
 
-    ac = argc;
-    return_argv = (char **) malloc (argc * sizeof(char *));
-    for (i = 0; i < argc; i++)
-	return_argv[i] = strndup(args[i].p, args[i].n);
+    for (i = 0; i < *ac; i++)
+	av[i] = strndup(args[i].p, args[i].n);
 
     /* This is called in all GTK applications. Arguments are parsed
      * from the command line and are returned to the application. */
-    gtk_init (&ac, &return_argv);
-
-    return ac;
+    gtk_init (ac, &av);
 }
 
 static void hello( GtkWidget *widget,
