@@ -1,10 +1,12 @@
 package main
 
 /*
-#cgo pkg-config: gtk+-2.0
+#cgo pkg-config: gtk+-3.0
+#include <stdlib.h>
 char *return_arg(int);
 int init(int, void*);
-void setup(void);
+void run(void);
+void update_button(char *text);
 */
 import "C"
 
@@ -12,6 +14,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime"
+	"time"
 	"unsafe"
 )
 
@@ -46,18 +50,36 @@ func initGTK() {
 
 func main() {
 
+	go doStuff()
+
+	runtime.LockOSThread()
+
 	initGTK()
 
 	flag.Parse()
 	fmt.Println("Remaining flag.Args():", flag.Args())
 
-	go C.setup()
+	C.run()
 
+	fmt.Println("Done")
+}
+
+func doStuff() {
+	time.Sleep(100 * time.Millisecond)
+
+	ticker := time.Tick(1000 * time.Millisecond)
+LOOP:
 	for {
-		m := <-msgCh
-		fmt.Println(m.ms)
-		if m.id == 0 {
-			break
+		select {
+		case m := <-msgCh:
+			fmt.Println(m.ms)
+			if m.id == 0 {
+				break LOOP
+			}
+		case <-ticker:
+			s := C.CString(fmt.Sprintf("Hello World at %s", time.Now().Format("3:04:05")))
+			C.update_button(s)
+			// s is freed in C
 		}
 	}
 }

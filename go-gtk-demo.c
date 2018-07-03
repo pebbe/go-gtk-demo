@@ -7,7 +7,7 @@ static const gchar *interface =
     "<interface>"
     "  <object class=\"GtkWindow\" id=\"main-window\">"
     "    <property name=\"title\">Go/GTK+ Demo</property>"
-    "    <property name=\"border-width\">100</property>"
+    "    <property name=\"border-width\">5</property>"
     "    <signal name=\"destroy\" handler=\"destroy\"/>"
     "    <signal name=\"delete-event\" handler=\"delete_event\"/>"
     "    <child>"
@@ -18,6 +18,8 @@ static const gchar *interface =
     "    </child>"
     "  </object>"
     "</interface>";
+
+GtkButton *button = NULL;
 
 char **return_argv;
 
@@ -45,15 +47,33 @@ int init(int argc, void *argv)
     return ac;
 }
 
-G_MODULE_EXPORT void hello( GtkWidget *widget,
-                   gpointer   data )
+void run()
 {
-    go_message(1, "Hello World");
+    char buffer[1000];
+    GtkBuilder *builder;
+    GError *error = NULL;
+    GtkWidget *window;
+
+    builder = gtk_builder_new ();
+    if (!gtk_builder_add_from_string (builder, interface, -1, &error)) {
+	g_snprintf (buffer, 999, "%s", error->message);
+	go_message (0, buffer);
+	return;
+    }
+    gtk_builder_connect_signals (builder, NULL);
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main-window"));
+    button = GTK_BUTTON (gtk_builder_get_object (builder, "my-button"));
+
+    gtk_widget_show_all (window);
+    gtk_main ();
 }
 
-G_MODULE_EXPORT gboolean delete_event( GtkWidget *widget,
-                              GdkEvent  *event,
-                              gpointer   data )
+G_MODULE_EXPORT void hello (GtkWidget *widget, gpointer data)
+{
+    go_message (1, "Hello World");
+}
+
+G_MODULE_EXPORT gboolean delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     /* If you return FALSE in the "delete-event" signal handler,
      * GTK will emit the "destroy" signal. Returning TRUE means
@@ -61,29 +81,30 @@ G_MODULE_EXPORT gboolean delete_event( GtkWidget *widget,
      * This is useful for popping up 'are you sure you want to quit?'
      * type dialogs. */
 
-    go_message(1, "Delete!");
+    go_message (1, "Delete!");
 
     return FALSE;
 }
 
-G_MODULE_EXPORT void destroy( GtkWidget *widget,
-                     gpointer   data )
+G_MODULE_EXPORT void destroy (GtkWidget *widget, gpointer data)
 {
     gtk_main_quit ();
 
-    go_message(0, "Destroy!");
+    go_message (0, "Destroy!");
 }
 
-void setup() {
+gboolean update_button_do (gpointer text)
+{
+    gchar lbl[64];
+    g_snprintf (lbl, 64, "%s", (char const *)text);
+    if (button)
+	gtk_button_set_label (button, lbl);
+    free (text);
 
-    GtkBuilder *builder;
-    GError *error = NULL;
-    GtkWidget *window;
+    return FALSE; /* don't repeat */
+}
 
-    builder = gtk_builder_new ();
-    gtk_builder_add_from_string (builder, interface, -1, &error);
-    gtk_builder_connect_signals (builder, NULL);
-    window = GTK_WIDGET(gtk_builder_get_object (builder, "main-window"));
-    gtk_widget_show_all (window);
-    gtk_main ();
+void update_button(char *text)
+{
+    gdk_threads_add_idle(update_button_do, (gpointer)text);
 }
