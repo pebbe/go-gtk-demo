@@ -3,23 +3,8 @@
 #include <string.h>
 #include "_cgo_export.h"
 
-static const gchar *interface =
-    "<interface>"
-    "  <object class=\"GtkWindow\" id=\"main-window\">"
-    "    <property name=\"title\">Go/GTK+ Demo</property>"
-    "    <property name=\"border-width\">5</property>"
-    "    <signal name=\"destroy\" handler=\"destroy\"/>"
-    "    <signal name=\"delete-event\" handler=\"delete_event\"/>"
-    "    <child>"
-    "      <object class=\"GtkButton\" id=\"my-button\">"
-    "        <property name=\"label\">Hello World</property>"
-    "        <signal name=\"clicked\" handler=\"hello\"/>"
-    "      </object>"
-    "    </child>"
-    "  </object>"
-    "</interface>";
-
-GtkButton *button = NULL;
+GtkLabel *label = NULL;
+GtkTextBuffer *textbuffer = NULL;
 
 char **return_argv;
 
@@ -49,20 +34,23 @@ int init(int argc, void *argv)
 
 void run()
 {
-    char buffer[1000];
+    static char buf[1000];
     GtkBuilder *builder;
     GError *error = NULL;
     GtkWidget *window;
 
     builder = gtk_builder_new ();
-    if (!gtk_builder_add_from_string (builder, interface, -1, &error)) {
-	g_snprintf (buffer, 999, "%s", error->message);
-	go_message (0, buffer);
+    if (!gtk_builder_add_from_file (builder, "go-gtk-demo.ui", &error)) {
+	g_snprintf (buf, 999, "%s", error->message);
+	go_message (0, buf);
 	return;
     }
     gtk_builder_connect_signals (builder, NULL);
+
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main-window"));
-    button = GTK_BUTTON (gtk_builder_get_object (builder, "my-button"));
+    label = GTK_LABEL (gtk_builder_get_object (builder, "my-label"));
+    textbuffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gtk_builder_get_object (builder, "my-text")));
+    gtk_text_buffer_set_text (textbuffer, "Hello, this is some text", -1);
 
     gtk_widget_show_all (window);
     gtk_main ();
@@ -93,18 +81,43 @@ G_MODULE_EXPORT void destroy (GtkWidget *widget, gpointer data)
     go_message (0, "Destroy!");
 }
 
-gboolean update_button_do (gpointer text)
+gboolean update_label_do (gpointer text)
 {
-    gchar lbl[64];
+    gchar lbl[65];
+
+    if (!label)
+	return FALSE; /* don't repeat */
+
     g_snprintf (lbl, 64, "%s", (char const *)text);
-    if (button)
-	gtk_button_set_label (button, lbl);
+    gtk_label_set_label (label, lbl);
     free (text);
 
     return FALSE; /* don't repeat */
 }
 
-void update_button(char *text)
+void update_label(char *text)
 {
-    gdk_threads_add_idle(update_button_do, (gpointer)text);
+    gdk_threads_add_idle(update_label_do, (gpointer)text);
+}
+
+gboolean get_text_do (gpointer nul)
+{
+    static char buf[10000];
+    GtkTextIter start, end;
+
+    if (!textbuffer)
+	return FALSE; /* don't repeat */
+
+    gtk_text_buffer_get_iter_at_offset (textbuffer, &start, 0);
+    gtk_text_buffer_get_iter_at_offset (textbuffer, &end, -1);
+    g_snprintf (buf, 9999, "Current text: [[ %s ]]",
+		gtk_text_buffer_get_text (textbuffer, &start, &end, TRUE));
+    go_message (1, buf);
+
+    return FALSE; /* don't repeat */
+}
+
+void get_text()
+{
+    gdk_threads_add_idle(get_text_do, NULL);
 }

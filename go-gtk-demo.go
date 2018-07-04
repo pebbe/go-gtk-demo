@@ -6,7 +6,8 @@ package main
 char *return_arg(int);
 int init(int, void*);
 void run(void);
-void update_button(char *text);
+void update_label(char *text);
+void get_text(void);
 */
 import "C"
 
@@ -20,7 +21,8 @@ import (
 )
 
 var (
-	msgCh = make(chan msg, 100)
+	msgCh  = make(chan msg, 100)
+	quitCh = make(chan bool)
 )
 
 type msg struct {
@@ -60,14 +62,16 @@ func main() {
 	fmt.Println("Remaining flag.Args():", flag.Args())
 
 	C.run()
+	fmt.Println("Gtk done")
+
+	<-quitCh
 
 	fmt.Println("Done")
 }
 
 func doStuff() {
-	time.Sleep(100 * time.Millisecond)
-
-	ticker := time.Tick(1000 * time.Millisecond)
+	ticker1 := time.Tick(1000 * time.Millisecond)
+	ticker2 := time.Tick(4567 * time.Millisecond)
 LOOP:
 	for {
 		select {
@@ -76,10 +80,13 @@ LOOP:
 			if m.id == 0 {
 				break LOOP
 			}
-		case <-ticker:
-			s := C.CString(fmt.Sprintf("Hello World at %s", time.Now().Format("3:04:05")))
-			C.update_button(s)
+		case <-ticker1:
+			s := C.CString(time.Now().Format("3:04:05"))
+			C.update_label(s)
 			// s is freed in C
+		case <-ticker2:
+			C.get_text()
 		}
 	}
+	close(quitCh)
 }
