@@ -10,6 +10,7 @@ import "C"
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"runtime"
 	"time"
@@ -75,7 +76,7 @@ LOOP:
 		case <-chGtkQuit:
 			break LOOP
 		case m := <-chMessage:
-			fmt.Println(m)
+			doMessage(m)
 		case <-ticker1:
 			s := C.CString(time.Now().Format("3:04:05"))
 			C.update_label(s)
@@ -85,4 +86,21 @@ LOOP:
 		}
 	}
 	close(chGoQuit)
+}
+
+func doMessage(m msg) {
+	switch m.id {
+	default:
+		log.Printf("-- unknown message id %d: %q\n", m.id, m.ms)
+	case C.idERROR:
+		log.Printf("-- error: %s\n", m.ms)
+	case C.idDELETE:
+		log.Printf("-- delete event: %s\n", m.ms)
+	case C.idDESTROY:
+		log.Printf("-- destroy event: %s\n", m.ms)
+	case C.idBUTTON:
+		log.Printf("-- button clicked: %s\n", m.ms)
+	case C.idTEXT:
+		log.Printf("-- text received: %q\n", m.ms)
+	}
 }
