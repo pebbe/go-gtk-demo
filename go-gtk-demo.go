@@ -3,11 +3,7 @@ package main
 /*
 #cgo pkg-config: gtk+-3.0
 #cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-char *return_arg(int);
-int init(int, void*);
-void run(void);
-void update_label(char *text);
-void get_text(void);
+#include "go-gtk-demo.h"
 */
 import "C"
 
@@ -21,8 +17,9 @@ import (
 )
 
 var (
-	msgCh  = make(chan msg, 100)
-	quitCh = make(chan bool)
+	chMessage = make(chan msg, 100)
+	chGtkQuit = make(chan bool)
+	chGoQuit  = make(chan bool)
 )
 
 type msg struct {
@@ -33,7 +30,7 @@ type msg struct {
 //export go_message
 func go_message(id int, cContent *C.char) {
 	content := C.GoString(cContent)
-	msgCh <- msg{id: id, ms: content}
+	chMessage <- msg{id: id, ms: content}
 }
 
 func initGTK() {
@@ -63,10 +60,10 @@ func main() {
 
 	C.run()
 	fmt.Println("Gtk done")
+	close(chGtkQuit)
 
-	<-quitCh
-
-	fmt.Println("Done")
+	<-chGoQuit
+	fmt.Println("All done")
 }
 
 func doStuff() {
@@ -75,11 +72,10 @@ func doStuff() {
 LOOP:
 	for {
 		select {
-		case m := <-msgCh:
-			fmt.Println(m.ms)
-			if m.id == 0 {
-				break LOOP
-			}
+		case <-chGtkQuit:
+			break LOOP
+		case m := <-chMessage:
+			fmt.Println(m)
 		case <-ticker1:
 			s := C.CString(time.Now().Format("3:04:05"))
 			C.update_label(s)
@@ -88,5 +84,5 @@ LOOP:
 			C.get_text()
 		}
 	}
-	close(quitCh)
+	close(chGoQuit)
 }

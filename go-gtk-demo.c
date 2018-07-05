@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "_cgo_export.h"
+#include "go-gtk-demo.h"
 
 GtkLabel *label = NULL;
 GtkTextBuffer *textbuffer = NULL;
@@ -42,7 +43,7 @@ void run()
     builder = gtk_builder_new ();
     if (!gtk_builder_add_from_file (builder, "go-gtk-demo.ui", &error)) {
 	g_snprintf (buf, 999, "%s", error->message);
-	go_message (0, buf);
+	go_message (idERROR, buf);
 	return;
     }
     gtk_builder_connect_signals (builder, NULL);
@@ -58,7 +59,7 @@ void run()
 
 G_MODULE_EXPORT void hello (GtkWidget *widget, gpointer data)
 {
-    go_message (1, "Hello World");
+    go_message (idBUTTON, "Hello World");
 }
 
 G_MODULE_EXPORT gboolean delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
@@ -69,7 +70,7 @@ G_MODULE_EXPORT gboolean delete_event (GtkWidget *widget, GdkEvent *event, gpoin
      * This is useful for popping up 'are you sure you want to quit?'
      * type dialogs. */
 
-    go_message (1, "Delete!");
+    go_message (idDELETE, "Delete!");
 
     return FALSE;
 }
@@ -78,7 +79,7 @@ G_MODULE_EXPORT void destroy (GtkWidget *widget, gpointer data)
 {
     gtk_main_quit ();
 
-    go_message (0, "Destroy!");
+    go_message (idDESTROY, "Destroy!");
 }
 
 gboolean update_label_do (gpointer text)
@@ -110,9 +111,9 @@ gboolean get_text_do (gpointer nul)
 
     gtk_text_buffer_get_iter_at_offset (textbuffer, &start, 0);
     gtk_text_buffer_get_iter_at_offset (textbuffer, &end, -1);
-    g_snprintf (buf, 9999, "Current text: [[ %s ]]",
+    g_snprintf (buf, 9999, "Current text: %s",
 		gtk_text_buffer_get_text (textbuffer, &start, &end, TRUE));
-    go_message (1, buf);
+    go_message (idTEXT, buf);
 
     return FALSE; /* don't repeat */
 }
