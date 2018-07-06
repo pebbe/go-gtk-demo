@@ -6,7 +6,7 @@
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Go/GTK+ Demo</property>
-    <property name="default_width">800</property>
+    <property name="default_width">1200</property>
     <property name="default_height">400</property>
     <property name="icon_name">face-monkey</property>
     <signal name="delete-event" handler="delete_event" swapped="no"/>
@@ -65,7 +65,21 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">1</property>
-            <property name="width">2</property>
+            <property name="width">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="my-box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
       </object>

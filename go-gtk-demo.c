@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <webkit2/webkit2.h>
 #include <stdlib.h>
 #include <string.h>
 #include "_cgo_export.h"
@@ -38,7 +39,8 @@ void run()
     static char buf[1000];
     GtkBuilder *builder;
     GError *error = NULL;
-    GtkWidget *window;
+    GtkWidget *window, *box;
+    WebKitWebView *webview = NULL;
 
     builder = gtk_builder_new ();
     if (!gtk_builder_add_from_file (builder, "go-gtk-demo.ui", &error)) {
@@ -52,6 +54,11 @@ void run()
     label = GTK_LABEL (gtk_builder_get_object (builder, "my-label"));
     textbuffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gtk_builder_get_object (builder, "my-text")));
     gtk_text_buffer_set_text (textbuffer, "Hello, this is some text", -1);
+
+    box = GTK_WIDGET (gtk_builder_get_object (builder, "my-box"));
+    webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webview), TRUE, TRUE, 0);
+    webkit_web_view_load_uri(webview, "http://pkleiweg.home.xs4all.nl/");
 
     gtk_widget_show_all (window);
     gtk_main ();
