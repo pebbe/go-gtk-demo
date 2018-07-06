@@ -10,5 +10,5 @@ This uses GTK+ 3
 ## To do
 
 Use [GtkApplication](https://wiki.gnome.org/HowDoI/GtkApplication)
-instead of gtk_init? Problem: no access to remaining command line
+instead of `gtk_init`? Problem: no access to remaining command line
 arguments.
