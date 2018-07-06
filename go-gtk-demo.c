@@ -41,6 +41,7 @@ void run()
     GError *error = NULL;
     GtkWidget *window, *box;
     WebKitWebView *webview = NULL;
+    WebKitSettings *settings = NULL;
 
     builder = gtk_builder_new ();
     if (!gtk_builder_add_from_file (builder, "go-gtk-demo.ui", &error)) {
@@ -56,9 +57,11 @@ void run()
     gtk_text_buffer_set_text (textbuffer, "Hello, this is some text", -1);
 
     box = GTK_WIDGET (gtk_builder_get_object (builder, "my-box"));
-    webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    settings = webkit_settings_new ();
+    webkit_settings_set_enable_webgl (settings, TRUE);
+    webview = WEBKIT_WEB_VIEW(webkit_web_view_new_with_settings (settings));
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webview), TRUE, TRUE, 0);
-    webkit_web_view_load_uri(webview, "http://pkleiweg.home.xs4all.nl/");
+    webkit_web_view_load_uri(webview, "https://get.webgl.org/");
 
     gtk_widget_show_all (window);
     gtk_main ();

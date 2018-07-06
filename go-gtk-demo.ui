@@ -7,7 +7,7 @@
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Go/GTK+ Demo</property>
     <property name="default_width">1200</property>
-    <property name="default_height">400</property>
+    <property name="default_height">800</property>
     <property name="icon_name">face-monkey</property>
     <signal name="delete-event" handler="delete_event" swapped="no"/>
     <signal name="destroy" handler="destroy" swapped="no"/>
@@ -25,7 +25,6 @@
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
             <property name="always_show_image">True</property>
             <signal name="clicked" handler="hello" swapped="no"/>
           </object>
@@ -38,6 +37,7 @@
           <object class="GtkTextView" id="my-text">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="vexpand">True</property>
             <property name="left_margin">16</property>
             <property name="right_margin">16</property>
             <property name="top_margin">16</property>
@@ -45,8 +45,8 @@
             <property name="monospace">True</property>
           </object>
           <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
           </packing>
         </child>
         <child>
@@ -64,8 +64,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-            <property name="width">3</property>
+            <property name="top_attach">2</property>
           </packing>
         </child>
         <child>
@@ -78,8 +77,10 @@
             </child>
           </object>
           <packing>
-            <property name="left_attach">2</property>
+            <property name="left_attach">1</property>
             <property name="top_attach">0</property>
+            <property name="width">2</property>
+            <property name="height">3</property>
           </packing>
         </child>
       </object>
