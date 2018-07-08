@@ -1,26 +1,24 @@
 package main
 
 /*
-#cgo pkg-config: gtk+-3.0 webkit2gtk-4.0
-#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -D_doesnt_work_with_webkit_GTK_DISABLE_DEPRECATED
-#include "go-gtk-demo.h"
+#cgo pkg-config: gtk+-3.0
+#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+#include "my_basic.h"
 */
 import "C"
 
 import (
-	"flag"
 	"fmt"
 	"log"
-	"os"
 	"runtime"
 	"time"
-	"unsafe"
 )
 
 var (
-	chMessage = make(chan msg, 100)
 	chGtkQuit = make(chan bool)
 	chGoQuit  = make(chan bool)
+
+	chMessage = make(chan msg, 100)
 )
 
 type msg struct {
@@ -34,30 +32,11 @@ func go_message(id int, cContent *C.char) {
 	chMessage <- msg{id: id, ms: content}
 }
 
-func initGTK() {
-
-	// pass command line arguments to GTK+
-	argc := int(C.init(C.int(len(os.Args)), unsafe.Pointer(&os.Args[0])))
-
-	// update os.Args
-	os.Args = os.Args[0:0]
-	for i := 0; i < argc; i++ {
-		os.Args = append(os.Args, C.GoString(C.return_arg(C.int(i))))
-	}
-
-	fmt.Println("Remaining command line arguments:", os.Args)
-}
-
 func main() {
 
 	go doStuff()
 
 	runtime.LockOSThread()
-
-	initGTK()
-
-	flag.Parse()
-	fmt.Println("Remaining flag.Args():", flag.Args())
 
 	C.run()
 	fmt.Println("Gtk done")

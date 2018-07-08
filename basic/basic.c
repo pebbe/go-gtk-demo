@@ -1,38 +1,11 @@
 #include <gtk/gtk.h>
-#include <webkit2/webkit2.h>
 #include <stdlib.h>
 #include <string.h>
 #include "_cgo_export.h"
-#include "go-gtk-demo.h"
+#include "my_basic.h"
 
 GtkLabel *label = NULL;
 GtkTextBuffer *textbuffer = NULL;
-
-char **return_argv;
-
-char *return_arg(int i)
-{
-    return return_argv[i];
-}
-
-int init(int argc, void *argv)
-{
-    int ac, i;
-    GoString *args;
-
-    args = (GoString *) argv;
-
-    ac = argc;
-    return_argv = (char **) malloc (argc * sizeof(char *));
-    for (i = 0; i < argc; i++)
-	return_argv[i] = strndup(args[i].p, args[i].n);
-
-    /* This is called in all GTK applications. Arguments are parsed
-     * from the command line and are returned to the application. */
-    gtk_init (&ac, &return_argv);
-
-    return ac;
-}
 
 void run()
 {
@@ -40,11 +13,11 @@ void run()
     GtkBuilder *builder;
     GError *error = NULL;
     GtkWidget *window, *box;
-    WebKitWebView *webview = NULL;
-    WebKitSettings *settings = NULL;
+
+    gtk_init (NULL, NULL);
 
     builder = gtk_builder_new ();
-    if (!gtk_builder_add_from_file (builder, "go-gtk-demo.ui", &error)) {
+    if (!gtk_builder_add_from_file (builder, "basic.ui", &error)) {
 	g_snprintf (buf, 999, "%s", error->message);
 	go_message (idERROR, buf);
 	return;
@@ -56,20 +29,8 @@ void run()
     textbuffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gtk_builder_get_object (builder, "my-text")));
     gtk_text_buffer_set_text (textbuffer, "Hello, this is some text", -1);
 
-    box = GTK_WIDGET (gtk_builder_get_object (builder, "my-box"));
-    settings = webkit_settings_new ();
-    webkit_settings_set_enable_webgl (settings, TRUE);
-    webview = WEBKIT_WEB_VIEW(webkit_web_view_new_with_settings (settings));
-    gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webview), TRUE, TRUE, 0);
-    webkit_web_view_load_uri(webview, "https://get.webgl.org/");
-
     gtk_widget_show_all (window);
     gtk_main ();
-}
-
-G_MODULE_EXPORT void hello (GtkWidget *widget, gpointer data)
-{
-    go_message (idBUTTON, "Hello World");
 }
 
 G_MODULE_EXPORT gboolean delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
@@ -90,6 +51,11 @@ G_MODULE_EXPORT void destroy (GtkWidget *widget, gpointer data)
     gtk_main_quit ();
 
     go_message (idDESTROY, "Destroy!");
+}
+
+G_MODULE_EXPORT void hello (GtkWidget *widget, gpointer data)
+{
+    go_message (idBUTTON, "Hello World");
 }
 
 gboolean update_label_do (gpointer text)
