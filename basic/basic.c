@@ -12,7 +12,7 @@ void run()
     static char buf[1000];
     GtkBuilder *builder;
     GError *error = NULL;
-    GtkWidget *window, *box;
+    GtkWidget *window;
 
     gtk_init (NULL, NULL);
 
