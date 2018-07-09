@@ -47,24 +47,37 @@ func main() {
 }
 
 func doStuff() {
-	ticker1 := time.Tick(1000 * time.Millisecond)
-	ticker2 := time.Tick(4567 * time.Millisecond)
+	defer close(chGoQuit)
+
+	// Wait for Gtk to get ready
 LOOP:
 	for {
 		select {
 		case <-chGtkQuit:
-			break LOOP
+			return
+		case m := <-chMessage:
+			doMessage(m)
+			if m.id == C.idREADY {
+				break LOOP
+			}
+		}
+	}
+
+	setClock()
+	ticker1 := time.Tick(1000 * time.Millisecond)
+	ticker2 := time.Tick(4567 * time.Millisecond)
+	for {
+		select {
+		case <-chGtkQuit:
+			return
 		case m := <-chMessage:
 			doMessage(m)
 		case <-ticker1:
-			s := C.CString(time.Now().Format("3:04:05"))
-			C.update_label(s)
-			// s is freed in C
+			setClock()
 		case <-ticker2:
 			C.get_text()
 		}
 	}
-	close(chGoQuit)
 }
 
 func doMessage(m msg) {
@@ -73,6 +86,8 @@ func doMessage(m msg) {
 		log.Printf("-- unknown message id %d: %q\n", m.id, m.ms)
 	case C.idERROR:
 		log.Printf("-- error: %s\n", m.ms)
+	case C.idREADY:
+		log.Printf("-- ready: %s\n", m.ms)
 	case C.idDELETE:
 		log.Printf("-- delete event: %s\n", m.ms)
 	case C.idDESTROY:
@@ -82,4 +97,10 @@ func doMessage(m msg) {
 	case C.idTEXT:
 		log.Printf("-- text received: %q\n", m.ms)
 	}
+}
+
+func setClock() {
+	s := C.CString(time.Now().Format("3:04:05"))
+	C.update_label(s)
+	// s is freed in C
 }

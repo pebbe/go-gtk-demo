@@ -1,7 +1,13 @@
 #ifndef _MY_BASIC_H_
 #define _MY_BASIC_H_
 
-enum ID { idERROR, idDELETE, idDESTROY };
+enum ID
+{
+    idERROR,
+    idREADY,
+    idDELETE,
+    idDESTROY
+};
 
 void run(void);
 

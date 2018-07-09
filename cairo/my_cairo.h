@@ -4,6 +4,7 @@
 enum ID
 {
     idERROR,
+    idREADY,
     idDELETE,
     idDESTROY,
 };

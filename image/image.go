@@ -12,7 +12,6 @@ import (
 	"io/ioutil"
 	"log"
 	"runtime"
-	"time"
 	"unsafe"
 )
 
@@ -49,20 +48,32 @@ func main() {
 }
 
 func doStuff() {
+	defer close(chGoQuit)
 
-	time.Sleep(time.Second)
-	setImage()
-
+	// Wait for Gtk to get ready
 LOOP:
 	for {
 		select {
 		case <-chGtkQuit:
-			break LOOP
+			return
+		case m := <-chMessage:
+			doMessage(m)
+			if m.id == C.idREADY {
+				break LOOP
+			}
+		}
+	}
+
+	setImage()
+
+	for {
+		select {
+		case <-chGtkQuit:
+			return
 		case m := <-chMessage:
 			doMessage(m)
 		}
 	}
-	close(chGoQuit)
 }
 
 func doMessage(m msg) {
@@ -71,6 +82,8 @@ func doMessage(m msg) {
 		log.Printf("-- unknown message id %d: %q\n", m.id, m.ms)
 	case C.idERROR:
 		log.Printf("-- error: %s\n", m.ms)
+	case C.idREADY:
+		log.Printf("-- ready: %s\n", m.ms)
 	case C.idDELETE:
 		log.Printf("-- delete event: %s\n", m.ms)
 	case C.idDESTROY:

@@ -50,6 +50,7 @@ void run()
     window = GTK_WIDGET(gtk_builder_get_object(builder, "main-window"));
     image = GTK_IMAGE(gtk_builder_get_object(builder, "my-image"));
 
+    go_message(idREADY, "Let's begin!");
     gtk_widget_show_all(window);
     gtk_main();
 }
