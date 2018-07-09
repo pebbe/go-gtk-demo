@@ -1,5 +1,5 @@
-#ifndef _MY_WEBKIT_H_
-#define _MY_WEBKIT_H_
+#ifndef _PROGRAM_MY_H_
+#define _PROGRAM_MY_H_
 
 enum ID
 {

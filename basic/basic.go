@@ -3,7 +3,7 @@ package main
 /*
 #cgo pkg-config: gtk+-3.0
 #cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-#include "my_basic.h"
+#include "basic_my.h"
 */
 import "C"
 

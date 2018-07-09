@@ -1,5 +1,5 @@
-#ifndef _MY_BASIC_H_
-#define _MY_BASIC_H_
+#ifndef _WEBKIT_MY_H_
+#define _WEBKIT_MY_H_
 
 enum ID
 {
@@ -10,7 +10,5 @@ enum ID
 };
 
 void run(void);
-
-void update_image(void *data, int size);
 
 #endif

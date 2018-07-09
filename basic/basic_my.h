@@ -1,5 +1,5 @@
-#ifndef _MY_BASIC_H_
-#define _MY_BASIC_H_
+#ifndef _BASIC_MY_H_
+#define _BASIC_MY_H_
 
 enum ID
 {

@@ -1,6 +1,6 @@
 all: cairo run
 
-cairo: cairo.go cairo.c my_cairo.h
+cairo: cairo.go cairo.c cairo_my.h
 	go build -o cairo .
 
 run:

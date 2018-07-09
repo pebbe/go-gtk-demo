@@ -1,5 +1,5 @@
-#ifndef _MY_PROGRAM_H_
-#define _MY_PROGRAM_H_
+#ifndef _BASIC_MY_H_
+#define _BASIC_MY_H_
 
 enum ID
 {
@@ -10,5 +10,7 @@ enum ID
 };
 
 void run(void);
+
+void update_image(void *data, int size);
 
 #endif

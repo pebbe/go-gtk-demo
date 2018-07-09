@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include "_cgo_export.h"
-#include "my_image.h"
+#include "image_my.h"
 
 typedef struct Img_
 {

@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 #include "_cgo_export.h"
-#include "my_webkit.h"
+#include "webkit_my.h"
 
 void run()
 {

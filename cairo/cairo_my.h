@@ -1,5 +1,5 @@
-#ifndef _MY_CAIRO_H_
-#define _MY_CAIRO_H_
+#ifndef _CAIRO_MY_H_
+#define _CAIRO_MY_H_
 
 enum ID
 {

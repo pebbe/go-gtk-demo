@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "_cgo_export.h"
-#include "my_basic.h"
+#include "basic_my.h"
 
 GtkLabel *label = NULL;
 GtkTextBuffer *textbuffer = NULL;

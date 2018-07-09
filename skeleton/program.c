@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include "_cgo_export.h"
-#include "my_program.h"
+#include "program_my.h"
 
 void run()
 {
