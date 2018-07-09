@@ -62,27 +62,28 @@ G_MODULE_EXPORT void hello(GtkWidget *widget, gpointer data)
 
 gboolean update_label_do(gpointer text)
 {
-    gchar lbl[65];
+    if (label)
+        gtk_label_set_label(label, (char const *)text);
 
-    if (!label)
-        return FALSE; /* don't repeat */
-
-    g_snprintf(lbl, 64, "%s", (char const *)text);
-    gtk_label_set_label(label, lbl);
     free(text);
-
     return FALSE; /* don't repeat */
 }
 
-void update_label(char *text)
+void update_label(void const *data)
 {
+    char
+        *text = strdup((char const *)data);
+
     gdk_threads_add_idle(update_label_do, (gpointer)text);
 }
 
 gboolean get_text_do(gpointer nul)
 {
-    static char buf[10000];
-    GtkTextIter start, end;
+    static char
+        buf[10000];
+    GtkTextIter
+        start,
+        end;
 
     if (!textbuffer)
         return FALSE; /* don't repeat */

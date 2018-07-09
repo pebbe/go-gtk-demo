@@ -12,6 +12,7 @@ import (
 	"log"
 	"runtime"
 	"time"
+	"unsafe"
 )
 
 var (
@@ -100,7 +101,7 @@ func doMessage(m msg) {
 }
 
 func setClock() {
-	s := C.CString(time.Now().Format("3:04:05"))
-	C.update_label(s)
-	// s is freed in C
+	b := []byte(time.Now().Format("3:04:05"))
+	b = append(b, 0)
+	C.update_label(unsafe.Pointer(&b[0]))
 }

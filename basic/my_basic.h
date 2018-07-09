@@ -13,7 +13,7 @@ enum ID
 
 void run(void);
 
-void update_label(char *text);
+void update_label(void const *text);
 void get_text(void);
 
 #endif
