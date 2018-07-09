@@ -8,24 +8,22 @@ package main
 import "C"
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"runtime"
 	"unsafe"
 )
 
-var (
-	chGtkQuit = make(chan bool)
-	chGoQuit  = make(chan bool)
-
-	chMessage = make(chan msg, 100)
-)
-
 type msg struct {
 	id int
 	ms string
 }
+
+var (
+	chGtkQuit = make(chan bool)
+	chGoQuit  = make(chan bool)
+	chMessage = make(chan msg, 100)
+)
 
 //export go_message
 func go_message(id int, cContent *C.char) {
@@ -40,11 +38,11 @@ func main() {
 	runtime.LockOSThread()
 
 	C.run()
-	fmt.Println("Gtk done")
+	log.Println("Gtk done")
 	close(chGtkQuit)
 
 	<-chGoQuit
-	fmt.Println("All done")
+	log.Println("All done")
 }
 
 func doStuff() {

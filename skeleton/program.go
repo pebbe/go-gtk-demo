@@ -1,9 +1,9 @@
 package main
 
 /*
-#cgo pkg-config: gtk+-3.0 webkit2gtk-4.0
-#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -D_doesnt_work_with_webkit_GTK_DISABLE_DEPRECATED
-#include "my_webkit.h"
+#cgo pkg-config: gtk+-3.0
+#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+#include "my_program.h"
 */
 import "C"
 
@@ -60,12 +60,15 @@ LOOP:
 		}
 	}
 
+	// MORE
+
 	for {
 		select {
 		case <-chGtkQuit:
 			return
 		case m := <-chMessage:
 			doMessage(m)
+			// MORE
 		}
 	}
 }
