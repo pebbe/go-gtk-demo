@@ -20,8 +20,8 @@ type msg struct {
 }
 
 var (
-	chGtkQuit = make(chan bool)
-	chGoQuit  = make(chan bool)
+	chGtkDone = make(chan bool)
+	chGoDone  = make(chan bool)
 	chMessage = make(chan msg, 100)
 )
 
@@ -39,20 +39,20 @@ func main() {
 
 	C.run()
 	log.Println("Gtk done")
-	close(chGtkQuit)
+	close(chGtkDone)
 
-	<-chGoQuit
+	<-chGoDone
 	log.Println("All done")
 }
 
 func doStuff() {
-	defer close(chGoQuit)
+	defer close(chGoDone)
 
 	// Wait for Gtk to get ready
 LOOP:
 	for {
 		select {
-		case <-chGtkQuit:
+		case <-chGtkDone:
 			return
 		case m := <-chMessage:
 			doMessage(m)
@@ -67,7 +67,7 @@ LOOP:
 	ticker2 := time.Tick(4567 * time.Millisecond)
 	for {
 		select {
-		case <-chGtkQuit:
+		case <-chGtkDone:
 			return
 		case m := <-chMessage:
 			doMessage(m)
