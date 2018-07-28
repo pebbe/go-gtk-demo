@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <string.h>
 #include "_cgo_export.h"
 #include "image_my.h"
 
@@ -69,19 +70,21 @@ gboolean update_image_do(gpointer data)
     Img
         *img;
 
+    img = (Img *)data;
+
     if (!image)
     {
+        free(img->data);
         free(data);
         return FALSE; /* don't repeat */
     }
-
-    img = (Img *)data;
 
     stream = g_memory_input_stream_new_from_data(img->data, img->size, NULL);
     pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
     gtk_image_set_from_pixbuf(image, pixbuf);
     g_object_unref(pixbuf);
 
+    free(img->data);
     free(data);
     return FALSE; /* don't repeat */
 }
@@ -91,7 +94,8 @@ void update_image(void *data, int size)
     Img
         *img = (Img *)malloc(sizeof(Img));
 
-    img->data = data;
+    img->data = malloc(size);
+    memcpy (img->data, data, size);
     img->size = size;
     gdk_threads_add_idle(update_image_do, (gpointer)img);
 }
