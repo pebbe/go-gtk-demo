@@ -82,5 +82,7 @@ func doMessage(m msg) {
 		log.Printf("-- delete event: %s\n", m.ms)
 	case C.idDESTROY:
 		log.Printf("-- destroy event: %s\n", m.ms)
+	case C.idLOADED:
+		log.Printf("-- page loaded: %s\n", m.ms)
 	}
 }

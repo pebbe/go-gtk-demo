@@ -6,7 +6,8 @@ enum ID
     idERROR,
     idREADY,
     idDELETE,
-    idDESTROY
+    idDESTROY,
+    idLOADED
 };
 
 void run(void);
