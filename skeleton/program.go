@@ -10,7 +10,10 @@ import "C"
 
 import (
 	"log"
+	"os"
+	"os/signal"
 	"runtime"
+	"syscall"
 )
 
 type msg struct {
@@ -35,6 +38,13 @@ func main() {
 	go doStuff()
 
 	runtime.LockOSThread()
+
+	go func() {
+		chSignal := make(chan os.Signal, 1)
+		signal.Notify(chSignal, syscall.SIGINT)
+		<-chSignal
+		C.quit()
+	}()
 
 	C.run()
 	log.Println("Gtk done")
