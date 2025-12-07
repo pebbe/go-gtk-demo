@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.18"></requires>
+  <object class="GtkWindow" id="main-window">
+    <property name="default-height">300</property>
+    <property name="default-width">400</property>
+    <property name="title" translatable="yes">Program GTK4</property>
+    <property name="icon_name">face-monkey-symbolic</property>
+    <signal handler="close_request" name="close-request"></signal>
+  </object>
+</interface>

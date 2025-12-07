@@ -1,16 +1,16 @@
 package main
 
 /*
-#cgo pkg-config: gtk+-3.0
-#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-#cgo LDFLAGS: -rdynamic
 #include "basic_my.h"
 */
 import "C"
 
 import (
 	"log"
+	"os"
+	"os/signal"
 	"runtime"
+	"syscall"
 	"time"
 	"unsafe"
 )
@@ -38,8 +38,15 @@ func main() {
 
 	runtime.LockOSThread()
 
-	C.run()
-	log.Println("Gtk done")
+	go func() {
+		chSignal := make(chan os.Signal, 1)
+		signal.Notify(chSignal, syscall.SIGINT)
+		<-chSignal
+		C.quit()
+	}()
+
+	e := C.run()
+	log.Println("Gtk done, exit status", e)
 	close(chGtkDone)
 
 	<-chGoDone
@@ -88,9 +95,9 @@ func doMessage(m msg) {
 		log.Printf("-- error: %s\n", m.ms)
 	case C.idREADY:
 		log.Printf("-- ready: %s\n", m.ms)
-	case C.idDELETE:
-		log.Printf("-- delete event: %s\n", m.ms)
-	case C.idDESTROY:
+	case C.idCLOSE:
+		log.Printf("-- close request event: %s\n", m.ms)
+	case C.idDESTROY: // Gtk 3
 		log.Printf("-- destroy event: %s\n", m.ms)
 	case C.idBUTTON:
 		log.Printf("-- button clicked: %s\n", m.ms)

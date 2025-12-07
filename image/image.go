@@ -1,17 +1,16 @@
 package main
 
 /*
-#cgo pkg-config: gtk+-3.0
-#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-#cgo LDFLAGS: -rdynamic
 #include "image_my.h"
 */
 import "C"
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
+	"os/signal"
 	"runtime"
+	"syscall"
 	"unsafe"
 )
 
@@ -38,8 +37,15 @@ func main() {
 
 	runtime.LockOSThread()
 
-	C.run()
-	log.Println("Gtk done")
+	go func() {
+		chSignal := make(chan os.Signal, 1)
+		signal.Notify(chSignal, syscall.SIGINT)
+		<-chSignal
+		C.quit()
+	}()
+
+	e := C.run()
+	log.Println("Gtk done, exit status", e)
 	close(chGtkDone)
 
 	<-chGoDone
@@ -83,15 +89,15 @@ func doMessage(m msg) {
 		log.Printf("-- error: %s\n", m.ms)
 	case C.idREADY:
 		log.Printf("-- ready: %s\n", m.ms)
-	case C.idDELETE:
-		log.Printf("-- delete event: %s\n", m.ms)
-	case C.idDESTROY:
+	case C.idCLOSE:
+		log.Printf("-- close request event: %s\n", m.ms)
+	case C.idDESTROY: // gtk 3
 		log.Printf("-- destroy event: %s\n", m.ms)
 	}
 }
 
 func setImage() {
-	data, err := ioutil.ReadFile("image.png")
+	data, err := os.ReadFile("image.png")
 	if err == nil {
 		C.update_image(unsafe.Pointer(&data[0]), C.int(len(data)))
 	} else {

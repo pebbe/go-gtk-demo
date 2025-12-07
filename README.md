@@ -1,9 +1,3 @@
-A few demonstrations of how to use [GTK+](http://www.gtk.org/) with [Go](http://golang.org/)
+A few demonstrations of how to use [Gtk](http://www.gtk.org/) with [Go](http://go.dev/)
 
-This uses GTK+ 3
-
-## To do
-
-Use [GtkApplication](https://wiki.gnome.org/HowDoI/GtkApplication)
-instead of `gtk_init`?
-
+Supports Gtk 3 and Gtk 4

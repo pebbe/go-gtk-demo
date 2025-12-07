@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"></requires>
+  <object class="GtkWindow" id="main-window">
+    <property name="title" translatable="1">Go/GTK4 Demo with WebKit</property>
+    <property name="default_width">800</property>
+    <property name="default_height">600</property>
+    <property name="icon_name">face-monkey-symbolic</property>
+    <signal handler="close_request" name="close-request" swapped="no"></signal>
+    <property name="child">
+      <object class="GtkBox" id="my-box">
+        <property name="vexpand">1</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <placeholder></placeholder>
+        </child>
+      </object>
+    </property>
+  </object>
+</interface>

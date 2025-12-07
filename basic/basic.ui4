@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"></requires>
+  <object class="GtkWindow" id="main-window">
+    <property name="title" translatable="1">Go/GTK4 Demo</property>
+    <property name="default_width">600</property>
+    <property name="default_height">300</property>
+    <property name="icon_name">face-monkey-symbolic</property>
+    <signal handler="close_request" name="close-request"></signal>
+    <property name="child">
+      <object class="GtkGrid">
+        <property name="row_spacing">5</property>
+        <property name="column_spacing">5</property>
+        <property name="column_homogeneous">1</property>
+        <child>
+          <object class="GtkButton" id="my-button">
+            <property name="label">Click Me!</property>
+            <property name="receives_default">1</property>
+            <property name="hexpand">1</property>
+            <property name="vexpand">0</property>
+            <signal handler="hello" name="clicked" swapped="no"></signal>
+            <layout>
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="my-label">
+            <property name="margin_top">10</property>
+            <property name="margin_bottom">10</property>
+            <property name="hexpand">1</property>
+            <property name="vexpand">0</property>
+            <property name="label" translatable="1">--:--:--</property>
+            <property name="justify">center</property>
+            <attributes>
+              <attribute name="style" value="oblique"></attribute>
+              <attribute name="weight" value="bold"></attribute>
+            </attributes>
+            <layout>
+              <property name="column">0</property>
+              <property name="row">1</property>
+              <property name="column-span">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="focusable">1</property>
+            <property name="hexpand">1</property>
+            <property name="vexpand">1</property>
+            <property name="child">
+              <object class="GtkTextView" id="my-text">
+                <property name="focusable">1</property>
+                <property name="hexpand">0</property>
+                <property name="vexpand">1</property>
+                <property name="left_margin">16</property>
+                <property name="right_margin">16</property>
+                <property name="top_margin">16</property>
+                <property name="bottom_margin">16</property>
+                <property name="accepts_tab">0</property>
+                <property name="monospace">1</property>
+              </object>
+            </property>
+            <layout>
+              <property name="column">1</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </property>
+  </object>
+</interface>

@@ -1,15 +1,15 @@
 #ifndef _CAIRO_MY_H_
 #define _CAIRO_MY_H_
 
-enum ID
-{
+enum ID {
     idERROR,
     idREADY,
-    idDELETE,
+    idCLOSE,
     idDESTROY,
 };
 
-void run(void);
+int run(void);
+void quit(void);
 
 void update_image(int hour, int minute, int second);
 

@@ -1,9 +1,6 @@
 package main
 
 /*
-#cgo pkg-config: gtk+-3.0
-#cgo CFLAGS: -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
-#cgo LDFLAGS: -rdynamic
 #include "program_my.h"
 */
 import "C"
@@ -46,8 +43,8 @@ func main() {
 		C.quit()
 	}()
 
-	C.run()
-	log.Println("Gtk done")
+	e := C.run()
+	log.Println("Gtk done, exit status", e)
 	close(chGtkDone)
 
 	<-chGoDone
@@ -92,9 +89,10 @@ func doMessage(m msg) {
 		log.Printf("-- error: %s\n", m.ms)
 	case C.idREADY:
 		log.Printf("-- ready: %s\n", m.ms)
-	case C.idDELETE:
-		log.Printf("-- delete event: %s\n", m.ms)
-	case C.idDESTROY:
+	case C.idCLOSE:
+		log.Printf("-- close request event: %s\n", m.ms)
+	case C.idDESTROY: // gtk 3
 		log.Printf("-- destroy event: %s\n", m.ms)
+
 	}
 }
