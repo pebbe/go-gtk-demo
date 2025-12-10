@@ -1,6 +1,7 @@
 .PHONY: help
-help:   ## this help text
-	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[34m%-6s\033[0m %s\n", $$1, $$2}'
+help:
+	@echo make targets:
+	@grep -E -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[34m%-6s\033[0m %s\n", $$1, $$2}'
 
 all: gtk3 gtk4 ## build with Gtk 3 and Gtk 4
 
