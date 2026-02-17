@@ -1,5 +1,4 @@
 //go:build gtk4
-// +build gtk4
 
 package main
 
